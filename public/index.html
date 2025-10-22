@@ -3,241 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- This meta tag prevents search engines from indexing the page -->
     <meta name="robots" content="noindex, nofollow">
     <title>Image to WebP Converter</title>
-    <style>
-        /* Use Inter font */
-        html {
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: #f7fafc; /* bg-gray-100 */
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 1rem;
-            box-sizing: border-box;
-        }
-
-        .container {
-            background-color: #ffffff;
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
-            padding: 2rem; /* p-8 */
-            max-width: 32rem; /* max-w-lg */
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        h1 {
-            font-size: 1.875rem; /* text-3xl */
-            font-weight: 700; /* font-bold */
-            text-align: center;
-            color: #2d3748; /* text-gray-800 */
-            margin-top: 0;
-            margin-bottom: 1.5rem; /* mb-6 */
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem; /* space-y-6 */
-        }
-        
-        .form-row {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem; /* mb-2 on label */
-        }
-
-        label {
-            display: block;
-            font-size: 0.875rem; /* text-sm */
-            font-weight: 500; /* font-medium */
-            color: #4a5568; /* text-gray-700 */
-        }
-        
-        /* --- NEW STYLES --- */
-        
-        .quality-slider {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        input[type="range"] {
-            flex-grow: 1;
-            cursor: pointer;
-        }
-
-        #qualityValue {
-            font-weight: 600;
-            color: #2d3748;
-            background-color: #f7fafc;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            min-width: 2.5rem;
-            text-align: center;
-        }
-        
-        input[type="text"] {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-        }
-        
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #3182ce;
-            box-shadow: 0 0 0 1px #3182ce;
-        }
-        
-        .size-info {
-            font-size: 0.875rem;
-            color: #4a5568;
-            font-weight: 500;
-            height: 1.25rem; /* Reserve space to prevent layout jump */
-        }
-
-        /* --- END NEW STYLES --- */
-
-        input[type="file"] {
-            display: block;
-            width: 100%;
-            font-size: 0.875rem; /* text-sm */
-            color: #718096; /* text-gray-500 */
-            cursor: pointer;
-        }
-
-        /* Style the "Browse" button */
-        input[type="file"]::file-selector-button {
-            margin-right: 1rem; /* file:mr-4 */
-            padding: 0.5rem 1rem; /* file:py-2 file:px-4 */
-            border-radius: 0.5rem; /* file:rounded-lg */
-            border: 0;
-            font-size: 0.875rem; /* file:text-sm */
-            font-weight: 600; /* file:font-semibold */
-            background-color: #ebf8ff; /* file:bg-blue-50 */
-            color: #3182ce; /* file:text-blue-700 */
-            transition: background-color 0.2s ease-in-out;
-            cursor: pointer;
-        }
-
-        input[type="file"]::file-selector-button:hover {
-            background-color: #bee3f8; /* hover:file:bg-blue-100 */
-        }
-
-        #convertButton {
-            width: 100%;
-            background-color: #3182ce; /* bg-blue-600 */
-            color: white;
-            font-weight: 700; /* font-bold */
-            padding: 0.75rem 1rem; /* py-3 px-4 */
-            border-radius: 0.5rem; /* rounded-lg */
-            border: none;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
-            cursor: pointer;
-        }
-
-        #convertButton:hover {
-            background-color: #2b6cb0; /* hover:bg-blue-700 */
-        }
-
-        #convertButton:focus {
-            outline: none;
-            /* focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 */
-            box-shadow: 0 0 0 2px white, 0 0 0 4px #63b3ed;
-        }
-
-        #convertButton:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        #status {
-            margin-top: 1.5rem; /* mt-6 */
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem; /* Add spacing between status elements */
-        }
-
-        #loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .spinner {
-            animation: spin 1s linear infinite;
-            border-radius: 50%;
-            width: 3rem; /* h-12 w-12 */
-            height: 3rem;
-            border: 2px solid #e2e8f0; /* Light border */
-            border-bottom-color: #3182ce; /* border-b-2 border-blue-600 */
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        #loading p {
-            color: #4a5568; /* text-gray-600 */
-            margin-top: 0.75rem; /* mt-3 */
-        }
-
-        #error {
-            color: #e53e3e; /* text-red-500 */
-            font-weight: 500; /* font-medium */
-            margin: 0;
-            padding: 0.5rem;
-        }
-
-        #downloadLink {
-            display: inline-block;
-            width: 100%;
-            box-sizing: border-box; /* Ensures padding doesn't break width */
-            background-color: #38a169; /* bg-green-600 */
-            color: white;
-            font-weight: 700; /* font-bold */
-            padding: 0.75rem 1rem; /* py-3 px-4 */
-            border-radius: 0.5rem; /* rounded-lg */
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
-            text-align: center;
-            text-decoration: none;
-        }
-
-        #downloadLink:hover {
-            background-color: #2f855a; /* hover:bg-green-700 */
-        }
-
-        #downloadLink:focus {
-            outline: none;
-            /* focus:ring-2 focus:ring-green-500 focus:ring-offset-2 */
-            box-shadow: 0 0 0 2px white, 0 0 0 4px #68d391;
-        }
-
-        /* Utility class to hide elements */
-        .hidden {
-            display: none !important;
-        }
-    </style>
+    
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -246,19 +15,15 @@
             Image to WebP Converter
         </h1>
 
-        <!-- Upload Form -->
         <form id="uploadForm">
-            <!-- File Input -->
             <div class="form-row">
                 <label for="imageInput">
-                    Select an image (PNG, JPG, GIF):
+                    Select image(s) (PNG, JPG, GIF):
                 </label>
-                <input type="file" id="imageInput" name="image" accept="image/png, image/jpeg, image/gif" required>
-                <!-- "Before" size display -->
+                <input type="file" id="imageInput" name="image" accept="image/png, image/jpeg, image/gif" required multiple>
                 <p id="beforeSize" class="size-info"></p>
             </div>
             
-            <!-- Quality Slider -->
             <div class="form-row">
                 <label for="qualityInput">
                     Quality (0-100):
@@ -269,7 +34,6 @@
                 </div>
             </div>
             
-            <!-- Filename Input -->
             <div class="form-row">
                 <label for="filenameInput">
                     Output filename (without extension):
@@ -282,20 +46,15 @@
             </button>
         </form>
 
-        <!-- Status/Result Area -->
         <div id="status">
-            <!-- Loading spinner (hidden by default) -->
             <div id="loading" class="hidden">
                 <div class="spinner"></div>
                 <p>Converting...</p>
             </div>
-            <!-- Error message (hidden by default) -->
             <p id="error" classs="hidden"></p>
-            <!-- "After" size display -->
             <p id="afterSize" class="size-info"></p>
-            <!-- Download link (hidden by default) -->
             <a id="downloadLink" href="#" download="converted.webp" class="hidden">
-                Download WebP
+                Download
             </a>
         </div>
     </div>
@@ -309,20 +68,12 @@
         const errorP = document.getElementById('error');
         const downloadLink = document.getElementById('downloadLink');
 
-        // --- NEW ELEMENT REFS ---
         const qualityInput = document.getElementById('qualityInput');
         const qualityValue = document.getElementById('qualityValue');
         const filenameInput = document.getElementById('filenameInput');
         const beforeSize = document.getElementById('beforeSize');
         const afterSize = document.getElementById('afterSize');
 
-        // --- HELPER FUNCTION ---
-        /**
-         * Formats bytes into a human-readable string.
-         * @param {number} bytes The number of bytes.
-         * @param {number} [decimals=2] The number of decimal places.
-         * @returns {string} A formatted string (e.g., "1.23 MB").
-         */
         function formatBytes(bytes, decimals = 2) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -332,57 +83,66 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
         }
 
-        // --- NEW EVENT LISTENERS ---
-
-        // Update quality value display when slider moves
         qualityInput.addEventListener('input', (e) => {
             qualityValue.textContent = e.target.value;
         });
 
-        // Show "before" size and auto-fill filename when file is selected
         imageInput.addEventListener('change', (e) => {
-            // Reset UI
             showDownload(null);
             showError(null);
             afterSize.textContent = '';
 
-            if (e.target.files && e.target.files.length > 0) {
-                const file = e.target.files[0];
-                
-                // Show "before" size
-                beforeSize.textContent = `Original size: ${formatBytes(file.size)}`;
-                
-                // Auto-fill filename input
-                const originalName = file.name.split('.').slice(0, -1).join('.');
-                filenameInput.value = originalName;
+            const files = e.target.files;
+
+            if (files && files.length > 0) {
+                if (files.length === 1) {
+                    const file = files[0];
+                    beforeSize.textContent = `Original size: ${formatBytes(file.size)}`;
+                    
+                    const originalName = file.name.split('.').slice(0, -1).join('.');
+                    filenameInput.value = originalName;
+                    filenameInput.disabled = false;
+                    filenameInput.placeholder = 'e.g., my-converted-image';
+                } else {
+                    let totalSize = 0;
+                    for (const file of files) {
+                        totalSize += file.size;
+                    }
+                    beforeSize.textContent = `${files.length} files selected. Total size: ${formatBytes(totalSize)}`;
+                    
+                    filenameInput.value = '';
+                    filenameInput.disabled = true;
+                    filenameInput.placeholder = 'Filename ignored for multiple files';
+                }
             } else {
                 beforeSize.textContent = '';
                 filenameInput.value = '';
+                filenameInput.disabled = false;
+                filenameInput.placeholder = 'e.g., my-converted-image';
             }
         });
-
-        // --- UPDATED SUBMIT ---
 
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             if (!imageInput.files || imageInput.files.length === 0) {
-                showError('Please select a file first.');
+                showError('Please select at least one file.');
                 return;
             }
 
-            const file = imageInput.files[0];
             const formData = new FormData();
-            formData.append('image', file);
-            // Append new form data
+            
+            for (const file of imageInput.files) {
+              formData.append('image', file);
+            }
+            
             formData.append('quality', qualityInput.value);
             formData.append('filename', filenameInput.value);
 
-            // Reset UI
             showLoading(true);
             showError(null);
             showDownload(null);
-            afterSize.textContent = ''; // Clear "after" size
+            afterSize.textContent = '';
 
             try {
                 const response = await fetch('/convert', {
@@ -397,15 +157,12 @@
                     throw new Error(errorText || `Server error: ${response.status}`);
                 }
 
-                // Get the blob data from the response
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
                 
-                // --- NEW: SHOW "AFTER" SIZE ---
                 afterSize.textContent = `Converted size: ${formatBytes(blob.size)}`;
 
-                // --- NEW: GET FILENAME FROM RESPONSE HEADER ---
-                let downloadFilename = 'converted.webp'; // Default
+                let downloadFilename = 'converted.webp';
                 const disposition = response.headers.get('content-disposition');
                 if (disposition && disposition.indexOf('attachment') !== -1) {
                     const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
@@ -415,7 +172,13 @@
                     }
                 }
                 
-                showDownload(url, downloadFilename); // Use the new filename
+                if (downloadFilename.endsWith('.zip')) {
+                    downloadLink.textContent = 'Download ZIP';
+                } else {
+                    downloadLink.textContent = 'Download WebP';
+                }
+
+                showDownload(url, downloadFilename);
 
             } catch (err) {
                 console.error('Conversion failed:', err);
@@ -437,11 +200,10 @@
         function showDownload(url, filename) {
             if (url) {
                 downloadLink.href = url;
-                downloadLink.download = filename; // Use the dynamic filename
+                downloadLink.download = filename;
                 downloadLink.classList.remove('hidden');
             } else {
                 downloadLink.classList.add('hidden');
-                // Clean up the old object URL to prevent memory leaks
                 if (downloadLink.href.startsWith('blob:')) {
                     URL.revokeObjectURL(downloadLink.href);
                 }
@@ -450,4 +212,3 @@
     </script>
 </body>
 </html>
-
