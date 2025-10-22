@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>Image to WebP Converter</title>
-    
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <div class="container">
@@ -20,11 +21,19 @@
                 <label for="imageInput">
                     Select image(s) (PNG, JPG, GIF):
                 </label>
-                <input type="file" id="imageInput" name="image" accept="image/png, image/jpeg, image/gif" required multiple>
+                <input type="file" id="imageInput" name="image" accept="image/png, image/jpeg, image/gif" required
+                    multiple>
                 <p id="beforeSize" class="size-info"></p>
             </div>
-            
-            <div class="form-row">
+
+            <div class="form-row-inline">
+                <input type="checkbox" id="losslessInput" name="lossless" value="true">
+                <label for="losslessInput">
+                    Lossless Compression (disables quality)
+                </label>
+            </div>
+
+            <div class="form-row" id="qualityRow">
                 <label for="qualityInput">
                     Quality (0-100):
                 </label>
@@ -33,14 +42,35 @@
                     <span id="qualityValue">80</span>
                 </div>
             </div>
-            
+
+            <div class="form-row">
+                <label for="effortInput">
+                    Conversion Effort (0=Fast, 4=Best):
+                </label>
+                <div class="quality-slider">
+                    <input type="range" id="effortInput" name="effort" min="0" max="4" value="4">
+                    <span id="effortValue">4</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    Resize (Optional):
+                </label>
+                <div class="resize-inputs">
+                    <input type="number" id="maxWidthInput" name="maxWidth" placeholder="Max Width" min="0">
+                    <span>&times;</span>
+                    <input type="number" id="maxHeightInput" name="maxHeight" placeholder="Max Height" min="0">
+                </div>
+            </div>
+
             <div class="form-row">
                 <label for="filenameInput">
-                    Output filename (without extension):
+                    Output filename (single file only):
                 </label>
                 <input type="text" id="filenameInput" name="filename" placeholder="e.g., my-converted-image">
             </div>
-            
+
             <button type="submit" id="convertButton">
                 Convert to WebP
             </button>
@@ -63,16 +93,28 @@
         const uploadForm = document.getElementById('uploadForm');
         const imageInput = document.getElementById('imageInput');
         const convertButton = document.getElementById('convertButton');
+
+        const qualityRow = document.getElementById('qualityRow');
+        const qualityInput = document.getElementById('qualityInput');
+        const qualityValue = document.getElementById('qualityValue');
+
+        const losslessInput = document.getElementById('losslessInput');
+
+        const effortInput = document.getElementById('effortInput');
+        const effortValue = document.getElementById('effortValue');
+
+        const maxWidthInput = document.getElementById('maxWidthInput');
+        const maxHeightInput = document.getElementById('maxHeightInput');
+
+        const filenameInput = document.getElementById('filenameInput');
+
         const statusDiv = document.getElementById('status');
         const loadingDiv = document.getElementById('loading');
         const errorP = document.getElementById('error');
         const downloadLink = document.getElementById('downloadLink');
-
-        const qualityInput = document.getElementById('qualityInput');
-        const qualityValue = document.getElementById('qualityValue');
-        const filenameInput = document.getElementById('filenameInput');
         const beforeSize = document.getElementById('beforeSize');
         const afterSize = document.getElementById('afterSize');
+
 
         function formatBytes(bytes, decimals = 2) {
             if (bytes === 0) return '0 Bytes';
@@ -87,18 +129,26 @@
             qualityValue.textContent = e.target.value;
         });
 
+        effortInput.addEventListener('input', (e) => {
+            effortValue.textContent = e.target.value;
+        });
+
+        losslessInput.addEventListener('change', (e) => {
+            const isLossless = e.target.checked;
+            qualityInput.disabled = isLossless;
+            qualityRow.classList.toggle('disabled', isLossless);
+        });
+
         imageInput.addEventListener('change', (e) => {
             showDownload(null);
             showError(null);
             afterSize.textContent = '';
-
             const files = e.target.files;
 
             if (files && files.length > 0) {
                 if (files.length === 1) {
                     const file = files[0];
                     beforeSize.textContent = `Original size: ${formatBytes(file.size)}`;
-                    
                     const originalName = file.name.split('.').slice(0, -1).join('.');
                     filenameInput.value = originalName;
                     filenameInput.disabled = false;
@@ -109,7 +159,6 @@
                         totalSize += file.size;
                     }
                     beforeSize.textContent = `${files.length} files selected. Total size: ${formatBytes(totalSize)}`;
-                    
                     filenameInput.value = '';
                     filenameInput.disabled = true;
                     filenameInput.placeholder = 'Filename ignored for multiple files';
@@ -131,12 +180,16 @@
             }
 
             const formData = new FormData();
-            
+
             for (const file of imageInput.files) {
-              formData.append('image', file);
+                formData.append('image', file);
             }
-            
+
             formData.append('quality', qualityInput.value);
+            formData.append('lossless', losslessInput.checked);
+            formData.append('effort', effortInput.value);
+            formData.append('maxWidth', maxWidthInput.value);
+            formData.append('maxHeight', maxHeightInput.value);
             formData.append('filename', filenameInput.value);
 
             showLoading(true);
@@ -159,7 +212,7 @@
 
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
-                
+
                 afterSize.textContent = `Converted size: ${formatBytes(blob.size)}`;
 
                 let downloadFilename = 'converted.webp';
@@ -171,7 +224,7 @@
                         downloadFilename = matches[1].replace(/['"]/g, '');
                     }
                 }
-                
+
                 if (downloadFilename.endsWith('.zip')) {
                     downloadLink.textContent = 'Download ZIP';
                 } else {
@@ -211,4 +264,5 @@
         }
     </script>
 </body>
+
 </html>
