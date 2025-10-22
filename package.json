@@ -1,0 +1,13 @@
+{
+  "name": "image-to-webp-converter",
+  "version": "1.0.0",
+  "description": "A web tool to convert images to WebP using cwebp.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
